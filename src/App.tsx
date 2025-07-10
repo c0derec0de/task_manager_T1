@@ -1,11 +1,16 @@
 import { useState } from 'react'
 import './App.css'
+import { Routes, Route }  from "react-router"
+import MainScreen from './screens/MainScreen/MainScreen'
+import TaskDetailsScreen from './screens/TaskDetailsScreen/TaskDetailsScreen'
 
 function App() {
   return (
     <>
-      <div>
-      </div>
+      <Routes>
+        <Route path='/' element={<MainScreen />}></Route>
+        <Route path='/task/:id' element={<TaskDetailsScreen />}></Route>
+      </Routes>
     </>
   )
 }
