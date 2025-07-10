@@ -1,5 +1,6 @@
 import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useTasks } from '../../context/TaskContext';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,41 +13,72 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CategoryTask, StatusTask, PriorityTask } from '../../types/TaskTypes';
-
+import { CategoryTask, StatusTask, PriorityTask, type Task } from '../../types/TaskTypes';
 
 export default function TaskDetails() {
-  const [category, setCategory] = React.useState('');
-  const [status, setStatus] = React.useState('');
-  const [priority, setPriority] = React.useState('');
-  const [title, setTitle] = React.useState('');
-  const [description, setDescription] = React.useState('');
+    const { id } = useParams();
+    
+    const { tasks, updateTask } = useTasks();
+    const task = tasks.find(t => t.id === id);
 
-  const handleCategoryChange = (event: SelectChangeEvent) => {
-    setCategory(event.target.value);
-  };
+    const [category, setCategory] = React.useState(task?.category || '');
+    const [status, setStatus] = React.useState(task?.status || '');
+    const [priority, setPriority] = React.useState(task?.priority || '');
+    const [title, setTitle] = React.useState(task?.title || '');
+    const [description, setDescription] = React.useState(task?.description || '');
 
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    setStatus(event.target.value);
-  };
+    const navigate = useNavigate();
 
-  const handlePriorityChange = (event: SelectChangeEvent) => {
-    setPriority(event.target.value);
-  };
+    const handleCategoryChange = (event: SelectChangeEvent) => {
+        setCategory(event.target.value);
+    };
 
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
-  };
+    const handleStatusChange = (event: SelectChangeEvent) => {
+        setStatus(event.target.value);
+    };
 
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value);
-  };
+    const handlePriorityChange = (event: SelectChangeEvent) => {
+        setPriority(event.target.value);
+    };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log({ title, description, category, status, priority });
-  };
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(event.target.value);
+    };
+
+    const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setDescription(event.target.value);
+    };
+
+    const handleSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        console.log({ title, description, category, status, priority });
+    };
+
+    const handleExit = () => {
+        navigate(`/`)
+    };
+
+    const handleSave = (event: React.FormEvent) => {
+        event.preventDefault();
+        
+        if (!id || !task) {
+            console.log('Таска не существует');
+            return;
+          }
+        
+        const updatedTask: Task = {
+            id: id,
+            title: title,
+            description: description,
+            category: category as CategoryTask,
+            status: status as StatusTask,
+            priority: priority as PriorityTask,
+            createdAt: task.createdAt 
+          };
+        
+        updateTask(id, updatedTask);
+        navigate('/');
+    };
 
   return (
       <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
@@ -68,7 +100,7 @@ export default function TaskDetails() {
                   required
                   sx={{ mb: 3 }}
                 />
-                
+
                 <TextField
                   fullWidth
                   id="task-description"
@@ -137,6 +169,7 @@ export default function TaskDetails() {
                 type="submit"
                 size="large"
                 sx={{ mr: 2 }}
+                onClick={handleSave}
               >
                 Сохранить
               </Button>
@@ -144,6 +177,7 @@ export default function TaskDetails() {
                 variant="outlined" 
                 color="secondary"
                 size="large"
+                onClick={handleExit}
               >
                 Отменить
               </Button>

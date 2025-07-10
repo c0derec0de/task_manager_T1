@@ -30,7 +30,34 @@ export const TaskProvider = ( { children }: { children: React.ReactNode} ) => {
           status: 'to do',
           priority: 'medium',
           createdAt: new Date()
-        }
+        },
+        {
+            id: '3',
+            title: 'Добавить смену тем',
+            description: 'Реализовать переключение между светлой и темной темой',
+            category: 'feature',
+            status: 'to do',
+            priority: 'medium',
+            createdAt: new Date()
+          },
+          {
+            id: '4',
+            title: 'Добавить смену тем',
+            description: 'Реализовать переключение между светлой и темной темой',
+            category: 'feature',
+            status: 'to do',
+            priority: 'medium',
+            createdAt: new Date()
+          },
+          {
+            id: '5',
+            title: 'Добавить смену тем',
+            description: 'Реализовать переключение',
+            category: 'feature',
+            status: 'to do',
+            priority: 'medium',
+            createdAt: new Date()
+          }
       ]);
 
     return (

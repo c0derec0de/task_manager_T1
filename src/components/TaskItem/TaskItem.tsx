@@ -7,6 +7,7 @@ import { Chip, Stack } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import type { Task } from '../../types/TaskTypes';
+import { useNavigate } from 'react-router-dom';
 
 interface TaskItemProps {
     task: Task;
@@ -16,9 +17,10 @@ interface TaskItemProps {
 const TaskItem: React.FC<TaskItemProps> = ({
     task
   }) => {
+    const navigate = useNavigate();
 
     const handleDetailsTask = () => {
-
+        navigate(`/task/${task.id}`)
     }
 
 
