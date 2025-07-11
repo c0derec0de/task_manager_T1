@@ -4,3 +4,6 @@
 - Сборщик проекта Vite
 - UI-фреймворк Material UI
 
+Запуск:
+npm install
+npm run dev 
