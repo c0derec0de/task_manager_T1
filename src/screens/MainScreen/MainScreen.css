@@ -1,0 +1,21 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.task-list-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 16px;
+  min-height: 300px;
+}
+
+.task-list-wrapper__not-exists {
+  text-align: "center";
+  margin-top: "40px";
+  font-size: "18px";
+  color: black;
+}

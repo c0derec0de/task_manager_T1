@@ -1,76 +1,58 @@
-import { createContext, useState, useContext } from "react"
-import type { Task } from "../types/TaskTypes"
+import { createContext, useState, useContext, useMemo } from "react";
+import type { Task } from "../types/TaskTypes";
+import { mockTasks } from '../data/mockTasks';
 
 
-export const TaskContext = createContext({
-    tasks: [] as Task[],
-    addTask: (task: Task) => {},
-    updateTask: (id: string, updatedTask: Task) => {},
-    deleteTask: (id: string) => {},
+interface TaskContextType {
+  tasks: Task[];
+  addTask: (task: Task) => void;
+  updateTask: (id: string, updatedTask: Task) => void;
+  filterTasks: (filters: {
+    category?: string;
+    status?: string;
+    priority?: string;
+  }) => Task[];
+}
+
+export const TaskContext = createContext<TaskContextType>({
+  tasks: [],
+  addTask: () => {},
+  updateTask: () => {},
+  filterTasks: () => [],
 });
 
 export const useTasks = () => useContext(TaskContext);
 
-export const TaskProvider = ( { children }: { children: React.ReactNode} ) => {
-    const [tasks, setTasks] = useState<Task[]>([
-        {
-          id: '1',
-          title: 'Исправить баг',
-          description: 'Пользователи не могут удалить таск',
-          category: 'bug',
-          status: 'in progress',
-          priority: 'high',
-          createdAt: new Date()
-        },
-        {
-          id: '2',
-          title: 'Добавить смену тем',
-          description: 'Реализовать переключение между светлой и темной темой',
-          category: 'feature',
-          status: 'to do',
-          priority: 'medium',
-          createdAt: new Date()
-        },
-        {
-            id: '3',
-            title: 'Добавить смену тем',
-            description: 'Реализовать переключение между светлой и темной темой',
-            category: 'feature',
-            status: 'to do',
-            priority: 'medium',
-            createdAt: new Date()
-          },
-          {
-            id: '4',
-            title: 'Добавить смену тем',
-            description: 'Реализовать переключение между светлой и темной темой',
-            category: 'feature',
-            status: 'to do',
-            priority: 'medium',
-            createdAt: new Date()
-          },
-          {
-            id: '5',
-            title: 'Добавить смену тем',
-            description: 'Реализовать переключение',
-            category: 'feature',
-            status: 'to do',
-            priority: 'medium',
-            createdAt: new Date()
-          }
-      ]);
+export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
+  const [tasks, setTasks] = useState<Task[]>(mockTasks);
 
-    return (
-        <TaskContext.Provider
-          value={{
-            tasks,
-            addTask: (task) => setTasks([...tasks, task]),
-            updateTask: (id, updatedTask) => 
-              setTasks(tasks.map(task => task.id === id ? updatedTask : task)),
-            deleteTask: (id) => setTasks(tasks.filter(task => task.id !== id)),
-          }}
-        >
-          {children}
-        </TaskContext.Provider>
+
+  const filterTasks = (filters: {
+    category?: string;
+    status?: string;
+    priority?: string;
+  }) => {
+    return tasks.filter((task) => {
+      return (
+        (!filters.category || task.category === filters.category) &&
+        (!filters.status || task.status === filters.status) &&
+        (!filters.priority || task.priority === filters.priority)
       );
-    };
+    });
+  };
+
+  const contextValue = useMemo(
+    () => ({
+      tasks,
+      addTask: (task: Task) => setTasks([...tasks, task]),
+      updateTask: (id: string, updatedTask: Task) =>
+        setTasks(tasks.map((task) => (task.id === id ? updatedTask : task))),
+      filterTasks,
+    }),
+    [tasks],
+  );
+
+  return (
+    <TaskContext.Provider value={contextValue}>{children}</TaskContext.Provider>
+  );
+};
