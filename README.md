@@ -5,5 +5,5 @@
 - UI-фреймворк Material UI
 
 Запуск:
-npm install
-npm run dev 
+- npm install
+- npm run dev 
